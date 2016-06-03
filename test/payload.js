@@ -273,7 +273,7 @@ describe('payload', () => {
             return reply(request.payload);
         };
 
-        const message = { 'msg': 'This message is going to be br compressed.' };
+        const message = { 'msg': 'This message is going to be compressed using br.' };
         const server = new Hapi.Server();
         server.connection();
         server.route({ method: 'POST', path: '/', handler: handler });
