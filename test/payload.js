@@ -266,14 +266,14 @@ describe('payload', () => {
         });
     });
 
-    it('handles brotli payload', (done) => {
+    it('handles br payload', (done) => {
 
         const handler = function (request, reply) {
 
             return reply(request.payload);
         };
 
-        const message = { 'msg': 'This message is going to be brotli compressed.' };
+        const message = { 'msg': 'This message is going to be br compressed.' };
         const server = new Hapi.Server();
         server.connection();
         server.route({ method: 'POST', path: '/', handler: handler });
@@ -287,7 +287,7 @@ describe('payload', () => {
                 url: '/',
                 headers: {
                     'content-type': 'application/json',
-                    'content-encoding': 'brotli',
+                    'content-encoding': 'br',
                     'content-length': buf.length
                 },
                 payload: buf
@@ -330,7 +330,7 @@ describe('payload', () => {
         });
     });
 
-    it('saves a file after content decoding (brotli)', (done) => {
+    it('saves a file after content decoding (br)', (done) => {
 
         const path = Path.join(__dirname, './file/image.jpg');
         const sourceContents = Fs.readFileSync(path);
@@ -350,7 +350,7 @@ describe('payload', () => {
             const server = new Hapi.Server();
             server.connection();
             server.route({ method: 'POST', path: '/file', config: { handler: handler, payload: { output: 'file' } } });
-            server.inject({ method: 'POST', url: '/file', payload: compressed, headers: { 'content-encoding': 'brotli' } }, (res) => {
+            server.inject({ method: 'POST', url: '/file', payload: compressed, headers: { 'content-encoding': 'br' } }, (res) => {
 
                 expect(res.result).to.equal(stats.size);
                 done();

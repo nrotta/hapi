@@ -482,7 +482,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns an JSONP response with brotli compression', (done) => {
+        it('returns an JSONP response with br compression', (done) => {
 
             const handler = function (request, reply) {
 
@@ -501,10 +501,10 @@ describe('transmission', () => {
                 }
             });
 
-            server.inject({ url: '/user/1/2?callback=docall', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/user/1/2?callback=docall', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.headers['content-type']).to.equal('text/javascript; charset=utf-8');
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 expect(res.headers.vary).to.equal('accept-encoding');
                 decompress(res.rawPayload, (err, result) => {
 
@@ -740,7 +740,7 @@ describe('transmission', () => {
             });
         });
 
-        it('skips compression on empty (brotli)', (done) => {
+        it('skips compression on empty (br)', (done) => {
 
             const server = new Hapi.Server();
             server.connection();
@@ -751,7 +751,7 @@ describe('transmission', () => {
             };
 
             server.route({ method: 'GET', path: '/', handler: handler });
-            server.inject({ url: '/', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.result).to.equal(null);
@@ -793,7 +793,7 @@ describe('transmission', () => {
             });
         });
 
-        it('does not skip compression for chunked transfer payloads (brotli)', (done) => {
+        it('does not skip compression for chunked transfer payloads (br)', (done) => {
 
             const server = new Hapi.Server();
             server.connection();
@@ -818,10 +818,10 @@ describe('transmission', () => {
             };
 
             server.route({ method: 'GET', path: '/', handler: handler });
-            server.inject({ url: '/', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 done();
             });
         });
@@ -937,7 +937,7 @@ describe('transmission', () => {
             });
         });
 
-        it('changes etag when content encoding is used (brotli)', (done) => {
+        it('changes etag when content encoding is used (br)', (done) => {
 
             const server = new Hapi.Server();
             server.register(Inert, Hoek.ignore);
@@ -952,12 +952,12 @@ describe('transmission', () => {
                     expect(res2.headers.etag).to.exist();
                     expect(res2.headers['last-modified']).to.exist();
 
-                    server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res3) => {
+                    server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res3) => {
 
                         expect(res3.statusCode).to.equal(200);
                         expect(res3.headers.vary).to.equal('accept-encoding');
                         expect(res3.headers.etag).to.not.equal(res2.headers.etag);
-                        expect(res3.headers.etag).to.equal(res2.headers.etag.slice(0, -1) + '-brotli"');
+                        expect(res3.headers.etag).to.equal(res2.headers.etag.slice(0, -1) + '-br"');
                         expect(res3.headers['last-modified']).to.equal(res2.headers['last-modified']);
                         done();
                     });
@@ -987,7 +987,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli file in the response when the request accepts brotli', (done) => {
+        it('returns a br file in the response when the request accepts br', (done) => {
 
             const server = new Hapi.Server();
             server.register(Inert, Hoek.ignore);
@@ -999,10 +999,10 @@ describe('transmission', () => {
 
             server.route({ method: 'GET', path: '/file', handler: handler });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.headers['content-type']).to.equal('application/json; charset=utf-8');
-                expect(res.headers['content-encoding']).to.equal('brotli');
+                expect(res.headers['content-encoding']).to.equal('br');
                 expect(res.headers['content-length']).to.not.exist();
                 expect(res.payload).to.exist();
                 done();
@@ -1031,7 +1031,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a plain file when not compressible (brotli)', (done) => {
+        it('returns a plain file when not compressible (br)', (done) => {
 
             const server = new Hapi.Server();
             server.register(Inert, Hoek.ignore);
@@ -1043,7 +1043,7 @@ describe('transmission', () => {
 
             server.route({ method: 'GET', path: '/file', handler: handler });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.headers['content-type']).to.equal('image/png');
                 expect(res.headers['content-encoding']).to.not.exist();
@@ -1074,7 +1074,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a plain file when compression disabled (brotli)', (done) => {
+        it('returns a plain file when compression disabled (br)', (done) => {
 
             const server = new Hapi.Server();
             server.register(Inert, Hoek.ignore);
@@ -1086,7 +1086,7 @@ describe('transmission', () => {
 
             server.route({ method: 'GET', path: '/file', handler: handler });
 
-            server.inject({ url: '/file', headers: { 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/file', headers: { 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.headers['content-type']).to.equal('application/json; charset=utf-8');
                 expect(res.headers['content-encoding']).to.not.exist();
@@ -1136,7 +1136,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli stream reply without a content-length header when accept-encoding is brotli', (done) => {
+        it('returns a br stream reply without a content-length header when accept-encoding is br', (done) => {
 
             const streamHandler = function (request, reply) {
 
@@ -1147,7 +1147,7 @@ describe('transmission', () => {
             server.connection();
             server.route({ method: 'GET', path: '/stream', handler: streamHandler });
 
-            server.inject({ url: '/stream', headers: { 'Content-Type': 'application/json', 'accept-encoding': 'brotli' } }, (res) => {
+            server.inject({ url: '/stream', headers: { 'Content-Type': 'application/json', 'accept-encoding': 'br' } }, (res) => {
 
                 expect(res.statusCode).to.equal(200);
                 expect(res.headers['content-length']).to.not.exist();
@@ -1207,7 +1207,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli response on a post request when accept-encoding: brotli is requested', (done) => {
+        it('returns a br response on a post request when accept-encoding: br is requested', (done) => {
 
             const data = '{"test":"true"}';
 
@@ -1230,7 +1230,7 @@ describe('transmission', () => {
 
                     expect(err).to.not.exist();
 
-                    Wreck.post(uri, { headers: { 'accept-encoding': 'brotli' }, payload: data }, (err, res, body) => {
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
@@ -1240,7 +1240,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli response on a post request when accept-encoding: brotli is requested', (done) => {
+        it('returns a br response on a post request when accept-encoding: br is requested', (done) => {
 
             const data = '{"test":"true"}';
 
@@ -1263,7 +1263,7 @@ describe('transmission', () => {
 
                     expect(err).to.not.exist();
 
-                    Wreck.post(uri, { headers: { 'accept-encoding': 'brotli' }, payload: data }, (err, res, body) => {
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
@@ -1306,7 +1306,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli response on a get request when accept-encoding: brotli is requested', (done) => {
+        it('returns a br response on a get request when accept-encoding: br is requested', (done) => {
 
             const data = '{"test":"true"}';
 
@@ -1329,7 +1329,7 @@ describe('transmission', () => {
 
                     expect(err).to.not.exist();
 
-                    Wreck.get(uri, { headers: { 'accept-encoding': 'brotli' } }, (err, res, body) => {
+                    Wreck.get(uri, { headers: { 'accept-encoding': 'br' } }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
@@ -1367,7 +1367,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli response on a post request when accept-encoding: * is requested', (done) => {
+        it('returns a br response on a post request when accept-encoding: * is requested', (done) => {
 
             const data = '{"test":"true"}';
 
@@ -1423,7 +1423,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a brotli response on a get request when accept-encoding: * is requested', (done) => {
+        it('returns a br response on a get request when accept-encoding: * is requested', (done) => {
 
             const data = '{"test":"true"}';
 
