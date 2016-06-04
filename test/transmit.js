@@ -1207,72 +1207,6 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a br response on a post request when accept-encoding: br is requested', (done) => {
-
-            const data = '{"test":"true"}';
-
-            const server = new Hapi.Server();
-            server.connection();
-
-            const handler = function (request, reply) {
-
-                return reply(request.payload);
-            };
-
-            server.route({ method: 'POST', path: '/', handler: handler });
-            server.start((err) => {
-
-                expect(err).to.not.exist();
-
-                const uri = 'http://localhost:' + server.info.port;
-
-                compress(new Buffer(data), (err, zipped) => {
-
-                    expect(err).to.not.exist();
-
-                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
-
-                        expect(err).to.not.exist();
-                        expect(body.toString()).to.equal(zipped.toString());
-                        server.stop(done);
-                    });
-                });
-            });
-        });
-
-        it('returns a br response on a post request when accept-encoding: br is requested', (done) => {
-
-            const data = '{"test":"true"}';
-
-            const server = new Hapi.Server();
-            server.connection();
-
-            const handler = function (request, reply) {
-
-                return reply(request.payload);
-            };
-
-            server.route({ method: 'POST', path: '/', handler: handler });
-            server.start((err) => {
-
-                expect(err).to.not.exist();
-
-                const uri = 'http://localhost:' + server.info.port;
-
-                compress(new Buffer(data), (err, zipped) => {
-
-                    expect(err).to.not.exist();
-
-                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
-
-                        expect(err).to.not.exist();
-                        expect(body.toString()).to.equal(zipped.toString());
-                        server.stop(done);
-                    });
-                });
-            });
-        });
-
         it('returns a gzip response on a get request when accept-encoding: gzip is requested', (done) => {
 
             const data = '{"test":"true"}';
@@ -1297,6 +1231,39 @@ describe('transmission', () => {
                     expect(err).to.not.exist();
 
                     Wreck.get(uri, { headers: { 'accept-encoding': 'gzip' } }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
+        it('returns a br response on a post request when accept-encoding: br is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(request.payload);
+            };
+
+            server.route({ method: 'POST', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                compress(new Buffer(data), (err, zipped) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
@@ -1367,63 +1334,7 @@ describe('transmission', () => {
             });
         });
 
-        it('returns a br response on a post request when accept-encoding: * is requested', (done) => {
-
-            const data = '{"test":"true"}';
-
-            const server = new Hapi.Server();
-            server.connection();
-
-            const handler = function (request, reply) {
-
-                return reply(request.payload);
-            };
-
-            server.route({ method: 'POST', path: '/', handler: handler });
-            server.start((err) => {
-
-                expect(err).to.not.exist();
-
-                const uri = 'http://localhost:' + server.info.port;
-
-                Wreck.post(uri, { headers: { 'accept-encoding': '*' }, payload: data }, (err, res, body) => {
-
-                    expect(err).to.not.exist();
-                    expect(body.toString()).to.equal(data);
-                    server.stop(done);
-                });
-            });
-        });
-
         it('returns a gzip response on a get request when accept-encoding: * is requested', (done) => {
-
-            const data = '{"test":"true"}';
-
-            const server = new Hapi.Server();
-            server.connection();
-
-            const handler = function (request, reply) {
-
-                return reply(data);
-            };
-
-            server.route({ method: 'GET', path: '/', handler: handler });
-            server.start((err) => {
-
-                expect(err).to.not.exist();
-
-                const uri = 'http://localhost:' + server.info.port;
-
-                Wreck.get(uri, { headers: { 'accept-encoding': '*' } }, (err, res, body) => {
-
-                    expect(err).to.not.exist();
-                    expect(body.toString()).to.equal(data);
-                    server.stop(done);
-                });
-            });
-        });
-
-        it('returns a br response on a get request when accept-encoding: * is requested', (done) => {
 
             const data = '{"test":"true"}';
 
@@ -1581,6 +1492,72 @@ describe('transmission', () => {
             });
         });
 
+        it('returns a br response on a post request when accept-encoding: br;q=1, gzip;q=0.5 is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(request.payload);
+            };
+
+            server.route({ method: 'POST', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                compress(new Buffer(data), (err, zipped) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'br;q=1, gzip;q=0.5' }, payload: data }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
+        it('returns a gzip response on a get request when accept-encoding: br;q=1, gzip;q=0.5 is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(data);
+            };
+
+            server.route({ method: 'GET', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                compress(new Buffer(data), (err, zipped) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.get(uri, { headers: { 'accept-encoding': 'br;q=1, gzip;q=0.5' } }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
         it('returns a deflate response on a post request when accept-encoding: deflate;q=1, gzip;q=0.5 is requested', (done) => {
 
             const data = '{"test":"true"}';
@@ -1647,6 +1624,72 @@ describe('transmission', () => {
             });
         });
 
+        it('returns a gzip response on a post request when accept-encoding: gzip;q=1, br;q=0.5 is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(request.payload);
+            };
+
+            server.route({ method: 'POST', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                Zlib.gzip(new Buffer(data), (err, deflated) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'gzip;q=1, br;q=0.5' }, payload: data }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(deflated.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
+        it('returns a deflate response on a get request when accept-encoding: gzip;q=1, br;q=0.5 is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(data);
+            };
+
+            server.route({ method: 'GET', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                Zlib.gzip(new Buffer(data), (err, deflated) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.get(uri, { headers: { 'accept-encoding': 'gzip;q=1, br;q=0.5' } }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(deflated.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
         it('returns a gzip response on a post request when accept-encoding: deflate, gzip is requested', (done) => {
 
             const data = '{"test":"true"}';
@@ -1704,6 +1747,72 @@ describe('transmission', () => {
                     expect(err).to.not.exist();
 
                     Wreck.get(uri, { headers: { 'accept-encoding': 'deflate, gzip' } }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
+        it('returns a br response on a post request when accept-encoding: deflate, gzip, br is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(request.payload);
+            };
+
+            server.route({ method: 'POST', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                compress(new Buffer(data), (err, zipped) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'deflate, gzip, br' }, payload: data }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+            });
+        });
+
+        it('returns a br response on a get request when accept-encoding: deflate, gzip, br is requested', (done) => {
+
+            const data = '{"test":"true"}';
+
+            const server = new Hapi.Server();
+            server.connection();
+
+            const handler = function (request, reply) {
+
+                return reply(data);
+            };
+
+            server.route({ method: 'GET', path: '/', handler: handler });
+            server.start((err) => {
+
+                expect(err).to.not.exist();
+
+                const uri = 'http://localhost:' + server.info.port;
+
+                compress(new Buffer(data), (err, zipped) => {
+
+                    expect(err).to.not.exist();
+
+                    Wreck.get(uri, { headers: { 'accept-encoding': 'deflate, gzip, br' } }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
@@ -1795,6 +1904,40 @@ describe('transmission', () => {
                     const uri = 'http://localhost:' + server.info.port;
 
                     Wreck.post(uri, { headers: { 'accept-encoding': 'gzip' }, payload: data }, (err, res, body) => {
+
+                        expect(err).to.not.exist();
+                        expect(body.toString()).to.equal(zipped.toString());
+                        server.stop(done);
+                    });
+                });
+
+            });
+        });
+
+        it('returns a br response when forced by the handler', (done) => {
+
+            const data = '{"test":"true"}';
+
+            compress(new Buffer(data), (err, zipped) => {
+
+                expect(err).to.not.exist();
+
+                const server = new Hapi.Server();
+                server.connection();
+
+                const handler = function (request, reply) {
+
+                    return reply(zipped).type('text/plain').header('content-encoding', 'br');
+                };
+
+                server.route({ method: 'POST', path: '/', handler: handler });
+                server.start((err) => {
+
+                    expect(err).to.not.exist();
+
+                    const uri = 'http://localhost:' + server.info.port;
+
+                    Wreck.post(uri, { headers: { 'accept-encoding': 'br' }, payload: data }, (err, res, body) => {
 
                         expect(err).to.not.exist();
                         expect(body.toString()).to.equal(zipped.toString());
